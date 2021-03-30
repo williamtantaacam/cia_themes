@@ -821,8 +821,12 @@ foreach($users as $user){
 		$u ->remove_role( 'unpaid_business_member' );
 	}
 	
-
-	if(in_array('vip_member', $user_roles) or in_array('regular_member', $user_roles) or in_array('premium_member', $user_roles)){
+	if($display_name == 'Regular Membership - $48.99 / year + HST' or $display_name == 'Premium Membership $149.99 / year + HST' or $display_name == 'ACI VIP Membership $1099 / year + HST'){
+		update_field('nickname', 'A' . combine_nums($first_num , $last_num , $email_num) ,  'user_' . $user -> ID);
+		$toupdate = array('nickname' => 'A' . combine_nums($first_num , $last_num , $email_num));
+		UM()->user()->update_profile($toupdate);
+	}
+	elseif(in_array('vip_member', $user_roles) or in_array('regular_member', $user_roles) or in_array('premium_member', $user_roles)){
 		update_field('nickname', 'A' . combine_nums($first_num , $last_num , $email_num) ,  'user_' . $user -> ID);
 		$toupdate = array('nickname' => 'A' . combine_nums($first_num , $last_num , $email_num));
 		UM()->user()->update_profile($toupdate);
