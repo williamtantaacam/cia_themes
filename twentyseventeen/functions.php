@@ -903,7 +903,7 @@ function sr_user_profile_update_phone( $user_id, $old_user_data ) {
   $user = get_userdata( $user_id );
  
 
-    $admin_email = "rzhang@taacam.com ,info@cainventors.org, sale@cainventors.org"; //
+    $admin_email = "rzhang@taacam.com, info@cainventors.org, sale@cainventors.org"; //
 	um_fetch_user($user -> ID );
 	$email_sent =  get_field('approved', 'user_' . $user -> ID);
 	$display_name = um_user('testtt'); 
@@ -927,12 +927,12 @@ function sr_user_profile_update_phone( $user_id, $old_user_data ) {
 
 		$first_name = um_user('first_name'); 
 		$last_name = um_user('last_name'); 
-		$message .= sprintf( __( 'Hello %s' ), $first_name . ' ' . $last_name ). "\r\n\r\n";
-		$message = sprintf( __( 'Thank you for your interest in our membership.' ) ) . "\r\n\r\n";
-		$message = sprintf( __( 'We have carefully reviewed your application. Unfortunately we decided that you are not eligible at this moment. ' ) ) . "\r\n\r\n";
-		$message = sprintf( __( 'If you believe this is a mistake or you have additional information to provide, you can please login to your account and reapply.' ) ) . "\r\n\r\n";
-		$message = sprintf( __( 'Looking forward to hearing from you again soon.' ) ) . "\r\n\r\n";		
-		$message = sprintf( __( 'Canadian Inventors Association' ) ) . "\r\n\r\n";		
+		$message = sprintf( __( 'Hello %s' ), $first_name . ' ' . $last_name ). "\r\n\r\n";
+		$message .= sprintf( __( 'Thank you for your interest in our membership.' ) ) . "\r\n\r\n";
+		$message .= sprintf( __( 'We have carefully reviewed your application. Unfortunately we decided that you are not eligible at this moment. ' ) ) . "\r\n\r\n";
+		$message .= sprintf( __( 'If you believe this is a mistake or you have additional information to provide, you can please login to your account and reapply.' ) ) . "\r\n\r\n";
+		$message .= sprintf( __( 'Looking forward to hearing from you again soon.' ) ) . "\r\n\r\n";		
+		$message .= sprintf( __( 'Canadian Inventors Association' ) ) . "\r\n\r\n";		
 
 		wp_mail( $user->user_email, sprintf( __( 'Thank You for Your Application' ), get_option('blogname') ), $message);
 	}
@@ -942,15 +942,18 @@ function sr_user_profile_update_phone( $user_id, $old_user_data ) {
 
 		$first_name = um_user('first_name'); 
 		$last_name = um_user('last_name'); 
-		$message .= sprintf( __( 'Hello %s' ), $first_name . ' ' . $last_name ). "\r\n\r\n";
-		$message = sprintf( __( 'Thank you for your interest in our membership.' ) ) . "\r\n\r\n";
-		$message = sprintf( __( 'Your membership is now approved.' ) ) . "\r\n\r\n";
-		$message = sprintf( __( 'Please make the payment.' ) ) . "\r\n\r\n";
-		$message = sprintf( __( 'https://canadianinventorsassociation.com/registration-page/' ) ) . "\r\n\r\n";		
-		$message = sprintf( __( 'Canadian Inventors Association' ) ) . "\r\n\r\n";	
+		$nickname = um_user('nickname'); 
+		
+		$message = sprintf( __( 'Hello %s' ), $first_name . ' ' . $last_name ). "\r\n\r\n";
+		$message .= sprintf( __( 'Thank you for your interest in our membership.' ) ) . "\r\n\r\n";
+		$message .= sprintf( __( 'Your membership is now approved.' ) ) . "\r\n\r\n";
+		$message .= sprintf( __( 'Your membership ID is: %s' ), $nickname ). "\r\n\r\n";
+		$message .= sprintf( __( 'Please make the payment.' ) ) . "\r\n\r\n";
+		$message .= sprintf( __( 'https://canadianinventorsassociation.com/registration-page/' ) ) . "\r\n\r\n";		
+		$message .= sprintf( __( 'Canadian Inventors Association' ) ) . "\r\n\r\n";	
 
 		update_field('approved', 'Y' ,  'user_' . $user -> ID);
-		wp_mail( $user->user_email, sprintf( __( 'Your Membership is Now Approved' ), get_option('blogname') ), $message);
+		wp_mail( $user->user_email . ', ' .  $admin_email , sprintf( __( 'Your Membership is Now Approved' ), get_option('blogname') ), $message);
 	}
 	elseif($user_hightest_role == 'business' and $app_status != 'Pending' ){
 		
@@ -1061,11 +1064,11 @@ function add_a_button( $content ) {
 	}
 	// Initial Un-approved Member
 	elseif($user_roles[0] == 'unpaid_business_member' and count($user_roles) == 1){
-		if( ($desired_role == 'Business Membership $149.99 / year + HST') ){
+		if( ($desired_role == 'Business Membership $149.99 / year + HST')  or $app_status == 'Approved'  ){
 			$content .= '<form action="https://canadianinventorsassociation.com/registration-page/" method="POST">
         <button>' . __( 'Pay Membership'  ) . '</button> </div>';	
 		}
-		elseif($desired_role == 'Not A Member' or $app_status == 'Approved' ){
+		elseif($desired_role == 'Not A Member'){
 			$content .= '<form action="https://canadianinventorsassociation.com/registration-page/" method="POST">
         <button>' . __( 'Change Membership'  ) . '</button> </div>';	
 		}
@@ -1094,6 +1097,6 @@ function add_a_button( $content ) {
     return $content;
     
 }
-}// test
+}// test2
 
 
