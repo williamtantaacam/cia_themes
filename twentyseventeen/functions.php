@@ -820,12 +820,12 @@ foreach($users as $user){
 		$u = new WP_User( $user -> ID  ); //pick a past user Role	
 		$u ->remove_role( 'unpaid_business_member' );
 	}
-	
-	if($display_name == 'Regular Membership - $48.99 / year + HST' or $display_name == 'Premium Membership $149.99 / year + HST' or $display_name == 'ACI VIP Membership $1099 / year + HST'){
+	$app_status = um_user('app_status');
+	if(($display_name == 'Regular Membership - $48.99 / year + HST' or $display_name == 'Premium Membership $149.99 / year + HST' or $display_name == 'ACI VIP Membership $1099 / year + HST') and $app_status == 'Approved' ){
 		update_field('nickname', 'A' . combine_nums($first_num , $last_num , $email_num) ,  'user_' . $user -> ID);
 		$toupdate = array('nickname' => 'A' . combine_nums($first_num , $last_num , $email_num));
 		UM()->user()->update_profile($toupdate);
-	} // updated
+	} // updated2
 	elseif(in_array('vip_member', $user_roles) or in_array('regular_member', $user_roles) or in_array('premium_member', $user_roles)){
 		update_field('nickname', 'A' . combine_nums($first_num , $last_num , $email_num) ,  'user_' . $user -> ID);
 		$toupdate = array('nickname' => 'A' . combine_nums($first_num , $last_num , $email_num));
