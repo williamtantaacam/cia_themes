@@ -825,7 +825,7 @@ foreach($users as $user){
 		update_field('nickname', 'A' . combine_nums($first_num , $last_num , $email_num) ,  'user_' . $user -> ID);
 		$toupdate = array('nickname' => 'A' . combine_nums($first_num , $last_num , $email_num));
 		UM()->user()->update_profile($toupdate);
-	}
+	} // updated
 	elseif(in_array('vip_member', $user_roles) or in_array('regular_member', $user_roles) or in_array('premium_member', $user_roles)){
 		update_field('nickname', 'A' . combine_nums($first_num , $last_num , $email_num) ,  'user_' . $user -> ID);
 		$toupdate = array('nickname' => 'A' . combine_nums($first_num , $last_num , $email_num));
