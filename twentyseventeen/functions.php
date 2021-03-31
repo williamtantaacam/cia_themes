@@ -896,14 +896,15 @@ function report_a_bug_handler() {
 
 }
 
-// IF PHONE NUMBER CHANGES
+// If User Profile updated
 function sr_user_profile_update_phone( $user_id, $old_user_data ) {
  
   $old_user_data = get_transient( 'sr_old_user_data_' . $user_id );
   $user = get_userdata( $user_id );
+  $headers = "From:info@cainventors.org";
  
 
-    $admin_email = "rzhang@taacam.com, info@cainventors.org, sale@cainventors.org"; //
+    $admin_email = "wtan@bigtan.com, rzhang@taacam.com, info@cainventors.org, sale@cainventors.org"; //
 	um_fetch_user($user -> ID );
 	$email_sent =  get_field('approved', 'user_' . $user -> ID);
 	$display_name = um_user('testtt'); 
@@ -934,7 +935,7 @@ function sr_user_profile_update_phone( $user_id, $old_user_data ) {
 		$message .= sprintf( __( 'Looking forward to hearing from you again soon.' ) ) . "\r\n\r\n";		
 		$message .= sprintf( __( 'Canadian Inventors Association' ) ) . "\r\n\r\n";		
 
-		wp_mail( $user->user_email, sprintf( __( 'Thank You for Your Application' ), get_option('blogname') ), $message);
+		wp_mail( $user->user_email . ', ' .  $admin_email , sprintf( __( 'Thank You for Your Application' ), get_option('blogname') ), $message, $headers);
 	}
 	elseif($user_hightest_role == 'business' and $app_status == 'Approved' and  $email_sent != 'Y'){
 		um_fetch_user($user -> ID );
@@ -947,13 +948,13 @@ function sr_user_profile_update_phone( $user_id, $old_user_data ) {
 		$message = sprintf( __( 'Hello %s' ), $first_name . ' ' . $last_name ). "\r\n\r\n";
 		$message .= sprintf( __( 'Thank you for your interest in our membership.' ) ) . "\r\n\r\n";
 		$message .= sprintf( __( 'Your membership is now approved.' ) ) . "\r\n\r\n";
-		$message .= sprintf( __( 'Your membership ID is: %s' ), $nickname ). "\r\n\r\n";
+		$message .= sprintf( __( 'Your membership ID is: %s' ), str_replace("B", "A", $nickname) ). "\r\n\r\n";
 		$message .= sprintf( __( 'Please make the payment.' ) ) . "\r\n\r\n";
 		$message .= sprintf( __( 'https://canadianinventorsassociation.com/registration-page/' ) ) . "\r\n\r\n";		
 		$message .= sprintf( __( 'Canadian Inventors Association' ) ) . "\r\n\r\n";	
 
 		update_field('approved', 'Y' ,  'user_' . $user -> ID);
-		wp_mail( $user->user_email . ', ' .  $admin_email , sprintf( __( 'Your Membership is Now Approved' ), get_option('blogname') ), $message);
+		wp_mail( $user->user_email . ', ' .  $admin_email , sprintf( __( 'Your Membership is Now Approved' ), get_option('blogname') ), $message, $headers);
 	}
 	elseif($user_hightest_role == 'business' and $app_status != 'Pending' ){
 		
@@ -1099,4 +1100,8 @@ function add_a_button( $content ) {
 }
 }// test2
 
+add_filter( 'wp_mail_from_name', 'custom_wpse_mail_from_name' );
+function custom_wpse_mail_from_name( $original_email_from ) {
+    return 'Canadian Inventors Association';
+}
 
