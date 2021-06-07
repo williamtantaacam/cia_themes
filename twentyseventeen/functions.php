@@ -1195,5 +1195,4 @@ function my_after_user_status_is_changed($user_id) {
 }
 
 
-}
 
