@@ -906,6 +906,11 @@ function sr_user_profile_update_phone( $user_id, $old_user_data ) {
 
     $admin_email = "wtan@bigtan.com, rzhang@taacam.com, info@cainventors.org, sale@cainventors.org"; //
 	um_fetch_user($user -> ID );
+	
+    $account_status = um_user('account_status'); 
+	if($account_status == 'awaiting_email_confirmation' or $account_status == 'checkmail'){
+		return none;
+	}
 	$email_sent =  get_field('approved', 'user_' . $user -> ID);
 	$display_name = um_user('testtt'); 
 	$app_status = um_user('app_status'); 
@@ -956,7 +961,7 @@ function sr_user_profile_update_phone( $user_id, $old_user_data ) {
 		update_field('approved', 'Y' ,  'user_' . $user -> ID);
 		wp_mail( $user->user_email . ', ' .  $admin_email , sprintf( __( 'Your Membership is Now Approved' ), get_option('blogname') ), $message, $headers);
 	}
-	elseif($user_hightest_role == 'business' and $app_status != 'Pending' ){
+	elseif($user_hightest_role == 'business' and ( $app_status == 'Disapproved') ){
 		
 		um_fetch_user($user -> ID );
 //		UM()->user()->update_profile($toupdate);
@@ -986,6 +991,7 @@ function sr_user_profile_update_phone( $user_id, $old_user_data ) {
 		$message .= sprintf( __( 'Patent Numbers: %s' ), $pat_nums  ). "\r\n\r\n";
 		$message .= sprintf( __( 'Name on Patents: %s' ), $pat_name  ). "\r\n\r\n";
 		$message .= sprintf( __( 'Additional info: %s' ), $add_txt  ). "\r\n\r\n";
+		$message .= sprintf( __( 'Account Stutus: %s' ), $account_status  ). "\r\n\r\n";
 		$link1 = 'https://canadianinventorsassociation.com/wp-content/uploads/ultimatemember/' . $user -> ID . '/' .  um_user('stuff1');
 		$link2 = 'https://canadianinventorsassociation.com/wp-content/uploads/ultimatemember/' . $user -> ID . '/' .  um_user('file2');
 		$link3 = 'https://canadianinventorsassociation.com/wp-content/uploads/ultimatemember/' . $user -> ID . '/' .  um_user('file3');
@@ -1103,5 +1109,91 @@ function add_a_button( $content ) {
 add_filter( 'wp_mail_from_name', 'custom_wpse_mail_from_name' );
 function custom_wpse_mail_from_name( $original_email_from ) {
     return 'Canadian Inventors Association';
+}
+  
+add_action( 'um_after_user_status_is_changed_hook', 'my_after_user_status_is_changed', 10 );
+function my_after_user_status_is_changed($user_id) {
+			      // your code here
+    $user = get_userdata( $user_id );
+    $headers = "From:info@cainventors.org";
+ 
+
+    $admin_email = "wtan@bigtan.com, rzhang@taacam.com, info@cainventors.org, sale@cainventors.org"; //
+	um_fetch_user($user -> ID );
+	$email_sent =  get_field('approved', 'user_' . $user -> ID);
+	$display_name = um_user('testtt'); 
+	$app_status = um_user('app_status'); 
+	
+	$account_status = um_user('account_status');
+	if($account_status != 'approved'){
+		return none;
+	}
+	$user_roles = $user->roles;
+	if(in_array('premium_member', $user_roles) or in_array('vip_member', $user_roles) or in_array('regular_member', $user_roles) or in_array('pms_subscription_plan_890', $user_roles) or 
+	   in_array('pms_subscription_plan_694', $user_roles)){
+		$user_hightest_role = 'inventor';
+	}elseif(in_array('pms_subscription_plan_886', $user_roles) or in_array('unpaid_business_member', $user_roles)){
+		$user_hightest_role = 'business';
+	}
+	$expre1 = ($display_name ==  'Business Membership $149.99 / year + HST');
+	$expre2 = ($display_name ==  'Not A Member');
+	$expre3 = ($display_name ==  '');
+	if($expre1 or $expre2 or $expre3){
+		// do nothing
+	}
+
+	elseif($user_hightest_role == 'business' and $app_status != 'Pending' ){
+		
+		um_fetch_user($user -> ID );
+//		UM()->user()->update_profile($toupdate);
+		$add_txt = um_user('add_txt'); 
+		$num_pat = um_user('num_pat'); 
+		$pat_nums = um_user('pat_nums'); 
+		$pat_name = um_user('pat_name'); 
+		$com_ad = um_user('com_ad'); 
+		$comp_name = um_user('comp_name'); 
+		$home_ad = um_user('home_ad'); 
+		$phone_number = um_user('phone_number'); 
+		$desire_role = um_user('testtt'); 
+		$ID = um_user('nickname'); 
+		$first_name = um_user('first_name'); 
+		$last_name = um_user('last_name'); 
+		$message = sprintf( __( 'This user has updated their profile on the canadianinventorsassociation Member site.' ) ) . "\r\n\r\n";
+		$message .= sprintf( __( 'User Full Name: %s' ), $first_name . $last_name ). "\r\n\r\n";
+		$message .= sprintf( __( 'User ID: %s' ), $ID  ). "\r\n\r\n";
+		$message .= sprintf( __( 'Email: %s' ), $user->user_email ). "\r\n\r\n";
+		$message .= sprintf( __( 'Current User Role: %s' ), $current_role). "\r\n\r\n";
+		$message .= sprintf( __( 'User Desired Role: %s' ), $desire_role  ). "\r\n\r\n";
+		$message .= sprintf( __( 'Phone Number: %s' ), $phone_number  ). "\r\n\r\n";
+		$message .= sprintf( __( 'Home Adress: %s' ), $home_ad  ). "\r\n\r\n";
+		$message .= sprintf( __( 'Company Name: %s' ), $comp_name  ). "\r\n\r\n";
+		$message .= sprintf( __( 'Company Adress: %s' ), $com_ad  ). "\r\n\r\n";
+		$message .= sprintf( __( 'Number of Patent: %s' ), $num_pat  ). "\r\n\r\n";
+		$message .= sprintf( __( 'Patent Numbers: %s' ), $pat_nums  ). "\r\n\r\n";
+		$message .= sprintf( __( 'Name on Patents: %s' ), $pat_name  ). "\r\n\r\n";
+		$message .= sprintf( __( 'Additional info: %s' ), $add_txt  ). "\r\n\r\n";
+		$link1 = 'https://canadianinventorsassociation.com/wp-content/uploads/ultimatemember/' . $user -> ID . '/' .  um_user('stuff1');
+		$link2 = 'https://canadianinventorsassociation.com/wp-content/uploads/ultimatemember/' . $user -> ID . '/' .  um_user('file2');
+		$link3 = 'https://canadianinventorsassociation.com/wp-content/uploads/ultimatemember/' . $user -> ID . '/' .  um_user('file3');
+		$link4 = 'https://canadianinventorsassociation.com/wp-content/uploads/ultimatemember/' . $user -> ID . '/' .  um_user('file4');
+		if(um_user('stuff1') != ''){
+		$message .= sprintf( __( 'attach: %s' ), $link1   ). "\r\n\r\n";
+			if(um_user('file2') != ''){
+				$message .= sprintf( __( 'attach: %s' ), $link2  ). "\r\n\r\n";
+				if(um_user('file3') != ''){
+					$message .= sprintf( __( 'attach: %s' ), $link3  ). "\r\n\r\n";
+					if(um_user('file4') != ''){
+						$message .= sprintf( __( 'attach: %s' ), $link4  ). "\r\n\r\n";
+					}
+				}
+			}
+		}
+		wp_mail( $admin_email, sprintf( __( 'User Applied a New Membership via Profile Update; Require Approval' ), get_option('blogname') ), $message);
+		$toupdate = array('$app_status' => 'Pending');
+		UM()->user()->update_profile($toupdate);
+	}
+}
+
+
 }
 
