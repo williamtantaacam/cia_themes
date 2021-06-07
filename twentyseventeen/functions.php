@@ -1195,4 +1195,34 @@ function my_after_user_status_is_changed($user_id) {
 }
 
 
+add_action('my_hourly_event', 'do_this_hourly');
 
+// The action will trigger when someone visits your WordPress site
+function my_activation() {
+    if ( !wp_next_scheduled( 'my_hourly_event' ) ) {
+        wp_schedule_event( current_time( 'timestamp' ), 'hourly', 'my_hourly_event');
+    }
+}
+add_action('wp', 'my_activation');
+
+function do_this_hourly() {
+	$users = get_users( array( 'fields' => array( 'ID' ) ) );
+    foreach($users as $user){
+	    um_fetch_user($user -> ID);
+
+	    $account_status = um_user('account_status');
+	    if($account_status == 'awaiting_email_confirmation' or $account_status == 'checkmail'){
+		    $today_date  = strtotime( 'today' );
+            $register_date  =  get_userdata($user -> ID)->user_registered;
+            $registered =  strtotime( $register_date );
+            $interval_date = ( $registered - $today_date) /(60 * 60 * 24);
+	    	if($interval_date >= 4){
+                require_once(ABSPATH.'wp-admin/includes/user.php' );
+				$success = wp_delete_user($user -> ID);
+	    	}
+    	}
+    }
+	
+
+}
+	
