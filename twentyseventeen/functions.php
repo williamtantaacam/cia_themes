@@ -1212,13 +1212,14 @@ function do_this_hourly() {
 
 	    $account_status = um_user('account_status');
 	    if($account_status == 'awaiting_email_confirmation' or $account_status == 'checkmail'){
-		    $today_date  = strtotime( 'today' );
+		    $today_date  = strtotime( current_time('Y-m-d H:i:s') );
             $register_date  =  get_userdata($user -> ID)->user_registered;
             $registered =  strtotime( $register_date );
             $interval_date = ( $registered - $today_date) /(60 * 60 * 24);
 	    	if($interval_date >= 4){
                 require_once(ABSPATH.'wp-admin/includes/user.php' );
 				$success = wp_delete_user($user -> ID);
+
 	    	}
     	}
     }
