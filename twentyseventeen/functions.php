@@ -901,10 +901,11 @@ function sr_user_profile_update_phone( $user_id, $old_user_data ) {
  
   $old_user_data = get_transient( 'sr_old_user_data_' . $user_id );
   $user = get_userdata( $user_id );
-  $headers = "From:info@cainventors.org";
+  $admin_email = "wtan@bigtan.com, rzhang@taacam.com, info@cainventors.org, sale@cainventors.org"; 
+  $headers = "From:info@cainventors.org \r\n Bcc: " . $admin_email;
  
 
-    $admin_email = "wtan@bigtan.com, rzhang@taacam.com, info@cainventors.org, sale@cainventors.org"; //
+
 	um_fetch_user($user -> ID );
 	
     $account_status = um_user('account_status'); 
@@ -940,7 +941,7 @@ function sr_user_profile_update_phone( $user_id, $old_user_data ) {
 		$message .= sprintf( __( 'Looking forward to hearing from you again soon.' ) ) . "\r\n\r\n";		
 		$message .= sprintf( __( 'Canadian Inventors Association' ) ) . "\r\n\r\n";		
 
-		wp_mail( $user->user_email . ', ' .  $admin_email , sprintf( __( 'Thank You for Your Application' ), get_option('blogname') ), $message, $headers);
+		wp_mail( $user->user_email , sprintf( __( 'Thank You for Your Application' ), get_option('blogname') ), $message, $headers);
 	}
 	elseif($user_hightest_role == 'business' and $app_status == 'Approved' and  $email_sent != 'Y'){
 		um_fetch_user($user -> ID );
@@ -959,7 +960,7 @@ function sr_user_profile_update_phone( $user_id, $old_user_data ) {
 		$message .= sprintf( __( 'Canadian Inventors Association' ) ) . "\r\n\r\n";	
 
 		update_field('approved', 'Y' ,  'user_' . $user -> ID);
-		wp_mail( $user->user_email . ', ' .  $admin_email , sprintf( __( 'Your Membership is Now Approved' ), get_option('blogname') ), $message, $headers);
+		wp_mail( $user->user_email , sprintf( __( 'Your Membership is Now Approved' ), get_option('blogname') ), $message, $headers);
 	}
 	elseif($user_hightest_role == 'business' and ( $app_status == 'Disapproved') ){
 		
@@ -1216,7 +1217,7 @@ function do_this_hourly() {
             $register_date  =  get_userdata($user -> ID)->user_registered;
             $registered =  strtotime( $register_date );
             $interval_date = ( $registered - $today_date) /(60 * 60 * 24);
-	    	if($interval_date >= 4){
+	    	if($interval_date >= 3){
                 require_once(ABSPATH.'wp-admin/includes/user.php' );
 				$success = wp_delete_user($user -> ID);
 
