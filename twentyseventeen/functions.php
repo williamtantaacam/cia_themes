@@ -786,7 +786,7 @@ foreach($users as $user){
 		$toupdate = array('curr_role' => 'Admin');
 	}
 	elseif(in_array('vip_member', $user_roles) ){
-		$toupdate = array('curr_role' => 'ACI VIP Membership $1099 / year + HST');
+		$toupdate = array('curr_role' => 'ACI VIP Membership $1799 / year + HST');
 	}
 	elseif(in_array('regular_member', $user_roles)){
 		$toupdate = array('curr_role' => 'Regular Membership $48.99 / year + HST');
@@ -821,7 +821,7 @@ foreach($users as $user){
 		$u ->remove_role( 'unpaid_business_member' );
 	}
 	$app_status = um_user('app_status');
-	if(($display_name == 'Regular Membership - $48.99 / year + HST' or $display_name == 'Premium Membership $149.99 / year + HST' or $display_name == 'ACI VIP Membership $1099 / year + HST') and $app_status == 'Approved' ){
+	if(($display_name == 'Regular Membership - $48.99 / year + HST' or $display_name == 'Premium Membership $149.99 / year + HST' or $display_name == 'ACI VIP Membership $1799 / year + HST') and $app_status == 'Approved' ){
 		update_field('nickname', 'A' . combine_nums($first_num , $last_num , $email_num) ,  'user_' . $user -> ID);
 		$toupdate = array('nickname' => 'A' . combine_nums($first_num , $last_num , $email_num));
 		UM()->user()->update_profile($toupdate);
@@ -1038,7 +1038,7 @@ function add_a_button( $content ) {
 			$content .= '<form action="https://canadianinventorsassociation.com/registration-page/" method="POST">
         <button>' . __( 'Pay Membership'  ) . '</button>    </div>';
 	}
-	elseif(in_array('vip_member', $user_roles) and $desired_role != 'ACI VIP Membership $1099 / year + HST'){
+	elseif(in_array('vip_member', $user_roles) and $desired_role != 'ACI VIP Membership $1799 / year + HST'){
 			$content .= '<form action="https://canadianinventorsassociation.com/registration-page/" method="POST">
         <button>' . __( 'Pay Membership'  ) . '</button>    </div>';
 	}
