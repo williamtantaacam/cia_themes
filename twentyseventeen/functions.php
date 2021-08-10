@@ -1234,13 +1234,12 @@ add_filter( 'the_content', 'add_popular_bar' );
 function add_popular_bar($content) {
 	
   if(is_single()) {
-
-    $content .= "<h3><b>Other Popular News</b></h3> [wpp range='custom' time_quantity=12 time_unit='month' limit=5 thumbnail_width=30 thumbnail_height=30]" ;
+	  
+	  $content .= "<div>[post-views]</div><h3><b>Other Popular News</b></h3> [wpp range='custom' time_quantity=12 time_unit='month' limit=5 thumbnail_width=30 thumbnail_height=30]" ;
 
   } 
 	
 	    return $content;
 }
    
-  
 	
